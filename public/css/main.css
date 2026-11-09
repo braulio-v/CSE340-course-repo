@@ -1,30 +1,282 @@
-html, body {
-    background-color: lightblue;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
+
+/* 0. Root Variables */
+
+:root {
+    /* Main color palette */
+    --primary-color: #16324F;
+    --secondary-color: #2A9D8F;
+    --background-color: #F4F7FA;
+
+    /* Additional color variations */
+    --primary-transparent: rgba(22, 50, 79, 0.12);
+    --primary-border: rgba(22, 50, 79, 0.15);
+    --primary-light: rgba(22, 50, 79, 0.04);
+
+    /* Font */
+    --main-font: 'Roboto', sans-serif;
+}
+
+
+/* 
+   1. Global Styles
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    nav {
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    font-family: var(--main-font);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    min-height: 100vh;
 
-        li {
-            display: inline;
-            margin-right: 15px;
-        }
+    display: flex;
+    flex-direction: column;
+}
 
-        a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
 
-            &:hover {
-                color: #0066cc;
-            }
-        }
+/* 
+   2. Navigation Bar
+ */
+
+nav {
+    background-color: var(--primary-color);
+    padding: 18px 24px;
+    box-shadow: 0 3px 10px var(--primary-transparent);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 35px;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    margin: 0;
+}
+
+nav a {
+    color: var(--background-color);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 8px 4px;
+    transition: color 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--secondary-color);
+}
+
+nav a:focus-visible {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 5px;
+}
+
+
+/* 
+   3. Main Content
+*/
+
+main {
+    width: 100%;
+    max-width: 1000px;
+    margin: 45px auto;
+    padding: 40px;
+    background-color: var(--background-color);
+    border: 1px solid var(--primary-border);
+    border-radius: 12px;
+    flex: 1;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 25px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid var(--secondary-color);
+}
+
+h2 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 25px 0 15px;
+}
+
+p {
+    margin: 15px 0;
+    font-size: 1rem;
+}
+
+
+/* 
+   4. Lists and List Items
+ */
+
+main ul {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+}
+
+main li {
+    background-color: var(--primary-light);
+    border-left: 4px solid var(--secondary-color);
+    border-radius: 6px;
+    margin-bottom: 14px;
+    padding: 16px 20px;
+}
+
+
+/* 
+   5. Organization Images
+ */
+
+main li img {
+    width: 85px;
+    height: 65px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 15px;
+}
+
+main li strong {
+    font-weight: 700;
+}
+
+
+/* 
+   6. Home Page Logo
+*/
+
+.main-logo {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    object-fit: contain;
+    margin: 35px auto 15px;
+}
+
+
+/* 
+   7. Footer
+*/
+
+footer {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+
+/* 
+   8. Responsive Design - Tablets
+ */
+
+@media (max-width: 768px) {
+    main {
+        width: 92%;
+        margin: 30px auto;
+        padding: 28px;
     }
-}    
+
+    h1 {
+        font-size: 1.9rem;
+    }
+
+    nav ul {
+        gap: 12px 22px;
+    }
+}
+
+
+/*
+   9. Responsive Design - Mobile
+*/
+
+@media (max-width: 480px) {
+    body {
+        font-size: 15px;
+    }
+
+    nav {
+        padding: 15px 10px;
+    }
+
+    nav ul {
+        gap: 10px 16px;
+    }
+
+    nav a {
+        font-size: 14px;
+    }
+
+    main {
+        width: 94%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.65rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    main li {
+        padding: 13px;
+    }
+
+    main li img {
+        width: 65px;
+        height: 55px;
+        margin-right: 10px;
+    }
+
+    .main-logo {
+        max-width: 240px;
+    }
+}
+
+
+/* 
+   10. Accessibility
+ */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
