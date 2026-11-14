@@ -206,3 +206,114 @@ LEFT JOIN public.service_project AS sp
     ON o.organization_id = sp.organization_id
 GROUP BY o.name
 ORDER BY o.name;
+
+
+
+-- =========================================
+-- CREATE CATEGORY TABLE
+-- =========================================
+
+CREATE TABLE public.category (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- =========================================
+-- CREATE SERVICE PROJECT CATEGORY TABLE
+-- =========================================
+
+CREATE TABLE public.service_project_category (
+    project_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+
+    PRIMARY KEY (project_id, category_id),
+
+    CONSTRAINT fk_spc_project
+        FOREIGN KEY (project_id)
+        REFERENCES public.service_project (project_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_spc_category
+        FOREIGN KEY (category_id)
+        REFERENCES public.category (category_id)
+        ON DELETE CASCADE
+);
+
+
+-- =========================================
+-- INSERT SERVICE PROJECT CATEGORIES
+-- =========================================
+
+INSERT INTO public.category (name)
+VALUES
+    ('Environmental'),
+    ('Educational'),
+    ('Community Support'),
+    ('Health and Wellness');
+
+
+
+-- =========================================
+-- ASSOCIATE PROJECTS WITH CATEGORIES
+-- =========================================
+
+INSERT INTO public.service_project_category
+(project_id, category_id)
+
+SELECT sp.project_id, c.category_id
+FROM public.service_project AS sp
+INNER JOIN public.category AS c
+    ON (
+        (sp.title IN (
+            'Community Park Renovation',
+            'Urban Tree Planting',
+            'Community Garden Construction',
+            'Neighborhood Cleanup',
+            'Community Vegetable Garden',
+            'Coastal Cleanup',
+            'Sustainable Farming Workshop',
+            'Native Plant Restoration'
+        ) AND c.name = 'Environmental')
+
+        OR
+
+        (sp.title IN (
+            'School Classroom Improvement',
+            'Sustainable Farming Workshop',
+            'Children Reading Program'
+        ) AND c.name = 'Educational')
+
+        OR
+
+        (sp.title IN (
+            'Youth Center Renovation',
+            'Food Donation Drive',
+            'Elderly Support Program',
+            'Clothing Donation Campaign'
+        ) AND c.name = 'Community Support')
+
+        OR
+
+        (sp.title = 'Community Health Fair'
+         AND c.name = 'Health and Wellness')
+    );
+
+SELECT
+    sp.title,
+    c.name AS category_name
+FROM public.service_project AS sp
+INNER JOIN public.service_project_category AS spc
+    ON sp.project_id = spc.project_id
+INNER JOIN public.category AS c
+    ON spc.category_id = c.category_id
+ORDER BY sp.title, c.name;
+
+SELECT
+    sp.project_id,
+    sp.title,
+    COUNT(spc.category_id) AS category_count
+FROM public.service_project AS sp
+LEFT JOIN public.service_project_category AS spc
+    ON sp.project_id = spc.project_id
+GROUP BY sp.project_id, sp.title
+ORDER BY sp.project_id;
