@@ -1,6 +1,9 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { testConnection } from './src/models/db.js';
+import { getAllOrganizations } from './src/models/organizations.js';
+import { getAllProjects } from './src/models/projects.js';
 
 
 // Define the application environment
@@ -36,14 +39,24 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/organizations', async (req, res) => {
+    const organizations = await getAllOrganizations();
     const title = 'Our Partner Organizations';
-    res.render('organizations', { title });
+    res.render('organizations', { title, organizations });
 });
 
+
 app.get('/projects', async (req, res) => {
+  try {
+    const projects = await getAllProjects();
     const title = 'Service Projects';
-    res.render('projects', { title });
+
+    res.render('projects', { title, projects });
+  } catch (error) {
+    console.error('Error retrieving service projects:', error);
+    res.status(500).send('Error retrieving service projects.');
+  }
 });
+
 
 app.get('/categories', async (req, res) => {
     const title = 'Service Project Categories';
@@ -51,7 +64,15 @@ app.get('/categories', async (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
+
+app.listen(PORT, async() => {
+  try {
+    await testConnection();
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
+  } catch (error) {
+    console.error('Failed to connect to the database:', error);
+    process.exit(1);
+  }
+  
 });
