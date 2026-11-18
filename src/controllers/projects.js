@@ -1,0 +1,43 @@
+// Import the Model function
+import {
+    getUpcomingProjects,
+    getProjectDetails
+} from '../models/projects.js';
+
+const NUMBER_OF_UPCOMING_PROJECTS = 5;
+// Define the controller function
+const showProjectsPage = async (req, res, next) => {
+    try {
+        const projects = await getUpcomingProjects(
+            NUMBER_OF_UPCOMING_PROJECTS
+        );
+
+        const title = 'Upcoming Service Projects';
+
+        res.render('projects', { title, projects });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const showProjectDetailsPage = async (req, res, next) => {
+    try {
+        const projectId = req.params.id;
+
+        const project = await getProjectDetails(projectId);
+
+        if (!project) {
+            const err = new Error('Project Not Found');
+            err.status = 404;
+            return next(err);
+        }
+
+        const title = 'Project Details';
+
+        res.render('project', { title, project });
+    } catch (error) {
+        next(error);
+    }
+};
+// Export the controller function
+export { showProjectsPage, showProjectDetailsPage };

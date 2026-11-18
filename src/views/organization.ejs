@@ -1,0 +1,24 @@
+
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+
+    <h2><%= organization.name %></h2>
+
+    <p>
+        Description: <%= organization.description %>
+    </p>
+
+    <p>
+        Contact Email: <%= organization.contact_email %>
+    </p>
+
+    <img
+        src="/images/<%= organization.logo_filename %>"
+        alt="<%= organization.name %> logo"
+    >
+
+</main>
+
+<%- include('partials/footer') %>

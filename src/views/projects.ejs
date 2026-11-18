@@ -2,23 +2,27 @@
 
 <main>
     <h1><%= title %></h1>
-    <h2>Upcoming Service Projects</h2>
+
+    <p>Here are our upcoming service projects:</p>
+
     <ul>
         <% projects.forEach(project => { %>
-            <%
-                const formattedDate = project.project_date.toLocaleDateString('en-US', {
-                    timeZone: 'UTC',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            %>
             <li>
-                <%= formattedDate %>:
-                <%= project.title %>
-                (<%= project.organization_name %>)
+                <a href="/project/<%= project.project_id %>">
+                    <%= project.title %>
+                </a>
+
+                <p>
+                    Partner Organization:
+                    <a href="/organization/<%= project.organization_id %>">
+                        <%= project.organization_name %>
+                    </a>
+                </p>
+
+                <p>Date: <%= project.project_date %></p>
+                <p>Location: <%= project.location %></p>
             </li>
-        <% }) %>
+        <% }); %>
     </ul>
 </main>
 
