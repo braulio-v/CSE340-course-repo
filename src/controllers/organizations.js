@@ -1,7 +1,8 @@
 // Import the Model function
 import {
     getAllOrganizations,
-    getOrganizationDetails
+    getOrganizationDetails,
+    createOrganization
 } from '../models/organizations.js';
 
 const showOrganizationsPage = async (req, res, next) => {
@@ -35,8 +36,30 @@ const showOrganizationDetailsPage = async (req, res, next) => {
         next(error);
     }
 };
+const processNewOrganizationForm = async (req, res, next) => {
+    try {
+        const { name, description, contactEmail } = req.body;
+
+        const logoFilename = 'placeholder-logo.png';
+
+        const organizationId = await createOrganization(
+            name,
+            description,
+            contactEmail,
+            logoFilename
+        );
+
+        req.flash('success', 'Organization added successfully!');
+
+        res.redirect(`/organization/${organizationId}`);
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 export {
     showOrganizationsPage,
-    showOrganizationDetailsPage
+    showOrganizationDetailsPage,
+    processNewOrganizationForm
 };
