@@ -41,6 +41,9 @@ app.use(flash);
 
 // Parse form data submitted through POST requests
 app.use(express.urlencoded({ extended: true }));
+// Parse JSON data from API requests
+app.use(express.json());
+
 /**
   * Configure Express middleware
   */
