@@ -1,9 +1,38 @@
 // Import the Model function
+import { body, validationResult } from 'express-validator';
 import {
     getAllOrganizations,
     getOrganizationDetails,
     createOrganization
 } from '../models/organizations.js';
+
+// Define validation and sanitization rules for organization form
+const organizationValidation = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Organization name is required')
+        .isLength({ min: 3, max: 150 })
+        .withMessage('Organization name must be between 3 and 150 characters')
+        .escape(),
+
+    body('description')
+        .trim()
+        .notEmpty()
+        .withMessage('Organization description is required')
+        .isLength({ max: 500 })
+        .withMessage('Organization description cannot exceed 500 characters')
+        .escape(),
+
+    body('contactEmail')
+        .trim()
+        .notEmpty()
+        .withMessage('Contact email is required')
+        .isEmail()
+        .withMessage('Please provide a valid email address')
+        .normalizeEmail()
+];
+
 
 const showOrganizationsPage = async (req, res, next) => {
     try {
@@ -36,12 +65,29 @@ const showOrganizationDetailsPage = async (req, res, next) => {
         next(error);
     }
 };
+
 const processNewOrganizationForm = async (req, res, next) => {
     try {
+        // Check for validation errors
+        const results = validationResult(req);
+
+        if (!results.isEmpty()) {
+
+            // Add each validation error to flash messages
+            results.array().forEach((error) => {
+                req.flash('error', error.msg);
+            });
+
+            // Redirect back to the form
+            return res.redirect('/new-organization');
+        }
+
+        // Extract validated form data
         const { name, description, contactEmail } = req.body;
 
         const logoFilename = 'placeholder-logo.png';
 
+        // Save the organization in the database
         const organizationId = await createOrganization(
             name,
             description,
@@ -49,9 +95,12 @@ const processNewOrganizationForm = async (req, res, next) => {
             logoFilename
         );
 
+        // Success message
         req.flash('success', 'Organization added successfully!');
 
+        // Redirect to organization details
         res.redirect(`/organization/${organizationId}`);
+
     } catch (error) {
         next(error);
     }
@@ -67,5 +116,6 @@ export {
     showOrganizationsPage,
     showOrganizationDetailsPage,
     processNewOrganizationForm,
-    showNewOrganizationForm
+    showNewOrganizationForm,
+    organizationValidation
 };
