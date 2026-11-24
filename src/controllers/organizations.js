@@ -3,7 +3,8 @@ import { body, validationResult } from 'express-validator';
 import {
     getAllOrganizations,
     getOrganizationDetails,
-    createOrganization
+    createOrganization,
+    updateOrganization
 } from '../models/organizations.js';
 
 // Define validation and sanitization rules for organization form
@@ -112,10 +113,88 @@ const showNewOrganizationForm = async (req, res) => {
     res.render('new-organization', { title });
 }
 
+
+const showEditOrganizationForm = async (req, res, next) => {
+    try {
+        const organizationId = req.params.id;
+
+        const organizationDetails = await getOrganizationDetails(organizationId);
+
+        if (!organizationDetails) {
+            return res.status(404).render('errors/404', {
+                title: 'Organization Not Found'
+            });
+        }
+
+        const title = 'Edit Organization';
+
+        res.render('edit-organization', {
+            title,
+            organizationDetails
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+
+const processEditOrganizationForm = async (req, res, next) => {
+    try {
+        // Check for validation errors
+        const results = validationResult(req);
+
+        if (!results.isEmpty()) {
+            // Add validation errors to flash messages
+            results.array().forEach((error) => {
+                req.flash('error', error.msg);
+            });
+
+            // Return to the edit form
+            return res.redirect(`/edit-organization/${req.params.id}`);
+        }
+
+        // Get the organization ID
+        const organizationId = req.params.id;
+
+        // Extract the validated form data
+        const {
+            name,
+            description,
+            contactEmail,
+            logoFilename
+        } = req.body;
+
+        // Update the organization in the database
+        await updateOrganization(
+            organizationId,
+            name,
+            description,
+            contactEmail,
+            logoFilename
+        );
+
+        // Set success message
+        req.flash('success', 'Organization updated successfully!');
+
+        // Redirect to the organization details page
+        res.redirect(`/organization/${organizationId}`);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
 export {
     showOrganizationsPage,
     showOrganizationDetailsPage,
     processNewOrganizationForm,
+    showEditOrganizationForm,
     showNewOrganizationForm,
-    organizationValidation
+    organizationValidation,
+    processEditOrganizationForm
 };
