@@ -149,11 +149,32 @@ const updateProject = async (
     return result.rows[0].project_id;
 };
 
+const getProjectsByOrganizationId = async (organizationId) => {
+    const query = `
+        SELECT
+            project_id,
+            title,
+            description,
+            location,
+            project_date,
+            organization_id
+        FROM public.service_project
+        WHERE organization_id = $1
+        ORDER BY project_date ASC;
+    `;
+
+    const queryParams = [organizationId];
+
+    const result = await db.query(query, queryParams);
+
+    return result.rows;
+};
 
 export {
     getAllProjects,
     getUpcomingProjects,
     getProjectDetails,
     createProject,
-    updateProject
+    updateProject,
+    getProjectsByOrganizationId
 };

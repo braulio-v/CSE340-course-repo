@@ -6,6 +6,7 @@ import {
     createOrganization,
     updateOrganization
 } from '../models/organizations.js';
+import { getProjectsByOrganizationId } from '../models/projects.js';
 
 // Define validation and sanitization rules for organization form
 const organizationValidation = [
@@ -51,17 +52,24 @@ const showOrganizationDetailsPage = async (req, res, next) => {
     try {
         const organizationId = req.params.id;
 
-        const organization = await getOrganizationDetails(organizationId);
+        const organizationDetails = await getOrganizationDetails(organizationId);
 
-        if (!organization) {
-            const err = new Error('Organization Not Found');
-            err.status = 404;
-            return next(err);
+        if (!organizationDetails) {
+            return res.status(404).render('errors/404', {
+                title: 'Page Not Found'
+            });
         }
 
-        const title = 'Organization Details';
+        const projects = await getProjectsByOrganizationId(organizationId);
 
-        res.render('organization', { title, organization });
+        const title = organizationDetails.name;
+
+        res.render('organization', {
+            title,
+            organizationDetails,
+            projects
+        });
+
     } catch (error) {
         next(error);
     }

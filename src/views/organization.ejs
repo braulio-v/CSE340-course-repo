@@ -4,23 +4,47 @@
 <main>
     <h1><%= title %></h1>
 
-    <h2><%= organization.name %></h2>
+    <h2><%= organizationDetails.name %></h2>
 
     <p>
-        Description: <%= organization.description %>
+        Description: <%= organizationDetails.description %>
     </p>
 
     <p>
-        Contact Email: <%= organization.contact_email %>
+        Contact Email: <%= organizationDetails.contact_email %>
     </p>
 
     <img
-        src="/images/<%= organization.logo_filename %>"
-        alt="<%= organization.name %> logo"
+        src="/images/<%= organizationDetails.logo_filename %>"
+        alt="<%= organizationDetails.name %> logo"
     >
 
+    <section>
+        <h2>Service Projects from this Organization</h2>
+
+        <% if (projects.length > 0) { %>
+
+            <ul>
+                <% projects.forEach(project => { %>
+
+                    <li>
+                        <a href="/project/<%= project.project_id %>">
+                            <%= project.title %>
+                        </a>
+                    </li>
+
+                <% }); %>
+            </ul>
+
+        <% } else { %>
+
+            <p>This organization does not have any service projects yet.</p>
+
+        <% } %>
+    </section>
+
     <p>
-        <a href="/edit-organization/<%= organization.organization_id %>">
+        <a href="/edit-organization/<%= organizationDetails.organization_id %>">
             Edit Organization
         </a>
     </p>
